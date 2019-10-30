@@ -2,7 +2,11 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <bitset>
+#include <cstring>
+#include <string.h>
 #include <assert.h>
+
 
 using namespace std;
 
@@ -20,6 +24,7 @@ inline bool isDigit(const char ch){
 
 LargeInt::LargeInt() {
 	this->symbol = 1;
+	this->data.push_back(0);
 }
 
 LargeInt::LargeInt(u32 val){
@@ -301,6 +306,8 @@ LargeInt LargeInt::operator/(const LargeInt &ano) const{
         tmp.data.push_back(this->data[idx]);
     }
 
+	cout<<"begin /";
+
     // len1 >= len2
     for (int idx = len1 - len2; idx >= 0; idx--)
     {
@@ -313,6 +320,7 @@ LargeInt LargeInt::operator/(const LargeInt &ano) const{
 		if(tmp.naiveCompare(cal) >= 0)
 	        tmp = naiveMinus(tmp, cal);   // 余数
 
+		cout<<"value\t"<<value<<endl;
         res.data.insert(res.data.begin(), value); // 除法是由高位向低位进行，所以插入位置在begin
     }
 
@@ -330,6 +338,8 @@ u32 LargeInt::getMaxCycle(const LargeInt &A, const LargeInt &B) const{
     u32 res = 0;
     bool flag = true;
 	
+	cout<<"**************while***********"<<endl;
+
     while(tmpA.naiveCompare(tmpB) >= 0){
         quotient = estimateQuotient(tmpA, tmpB);
 
@@ -342,13 +352,18 @@ u32 LargeInt::getMaxCycle(const LargeInt &A, const LargeInt &B) const{
 
         res = flag ? (res + quotient) : (res - quotient);
         flag = !flag;
+
+		cout<<res<<endl;
     }
 
     // 微调 
     while (res > 0 && (B * res) > A) {
+		cout<<"while loop"<<res<<endl;
+		cout<<A<<"\t"<<B<<endl;
 		res--;
 	}
 
+	cout<<"getMaxCycle res\t"<<res<<endl;
     return res;
 }
 
@@ -376,8 +391,14 @@ u32 LargeInt::estimateQuotient(const LargeInt &A, const LargeInt &B) const{
 }
 
 
-string LargeInt::toString() const
-{
+LargeInt LargeInt::module(const LargeInt &ano) const{
+	cout<<"begin module"<<endl;
+	LargeInt quotient = *this / ano;
+	cout<<"quotient\t"<<quotient<<endl;
+	return *this - quotient * ano;
+}
+
+string LargeInt::toString() const{
     int len = this->data.size();
     int shift = 0;
 	// +2：为符号留出空位，否则内存泄漏
@@ -390,7 +411,7 @@ string LargeInt::toString() const
     if (len > 0)
         shift += sprintf(buff + shift, "%x", this->data[len - 1]);
 
-    for (int idx = len - 2; idx >= 0; --idx)
+    for (int idx = len - 2; idx >= 0; idx--)
     {
         shift += sprintf(buff + shift, FORMAT_STR, this->data[idx]);
     }
@@ -400,6 +421,25 @@ string LargeInt::toString() const
     delete[] buff;
 
     return retStr;
+}
+
+string LargeInt::toBinString() const{
+	int len = this->data.size();
+	string res;
+	string tmp;
+	u32 num = 0;
+	for(int i = len - 1;i >= 0;i--){
+		num = this->data[i];
+		tmp.clear();
+		while(num > 0){
+			tmp += (char)('0' + (num & 0x1));
+			num >>= 1;
+		}
+		reverse(tmp.begin(), tmp.end());
+		tmp = string(28 - tmp.length(), '0') + tmp;
+		res += tmp;
+	}
+	return res;
 }
 
 ostream &operator<<(ostream &output, const LargeInt &ano){

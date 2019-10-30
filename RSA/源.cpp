@@ -1,4 +1,5 @@
 #include "LargeInt.h"
+#include "Generator.h"
 
 #include <iostream>
 #include <cmath>
@@ -54,18 +55,39 @@ int main(){
 		i += 1;
 	}
 
+	LargeInt n(1234535);
+
+	cout<<"module1\t";
+	cout<<tmp.module(n)<<endl;
+
+	LargeInt t1(3);
+	LargeInt t2(1024);
+	cout<<"module2\t"<<exponent(t1, t2, n)<<endl;
+
 	//cout<<tmp.toString()<<endl;
+
+	cout<<"******************"<<endl;
 
 	LargeInt res1;
 	res1 = tmp * 10;
+	
 
 	LargeInt res2;
-	for(int i = 0;i < 10;i++)
+	for(int i = 0;i < 1000;i++)
 		res2 = res2 + tmp;
 
-	cout<<res1<<endl<<res2<<endl;
+	string s = res2.toBinString();
+	LargeInt res3 = 0;
+	for(char c : s){
+		res3 = (res3 * 2) + (c - '0');
+	}
+	cout<<"res2\t"<<res2<<endl;
+	cout<<"res3\t"<<res3<<endl;
+	cout<<(res3 - res2)<<endl;
 
-	cout<<(res1 - res2)<<endl;
+	//cout<<res1<<endl<<res2<<endl;
+
+	//cout<<(res1 - res2)<<endl;
 
 	system("Pause");
 	return 0;

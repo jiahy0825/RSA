@@ -1,3 +1,6 @@
+#ifndef _LARGEINT_H
+#define _LARGEINT_H
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -41,6 +44,8 @@ public:
     LargeInt operator*(const LargeInt &ano) const;
     LargeInt operator/(const LargeInt &ano) const;
 
+	LargeInt module(const LargeInt &ano) const;
+
     // 比较运算符重载
     bool operator==(const LargeInt &ano) const;
     bool operator!=(const LargeInt &ano) const;
@@ -51,5 +56,8 @@ public:
 
     // 字符串格式化输出
     string toString() const;
+	string toBinString() const;
 	friend ostream &operator<<(ostream &output, const LargeInt &ano);
 };
+
+#endif
