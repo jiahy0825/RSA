@@ -24,7 +24,7 @@ inline bool isDigit(const char ch){
 
 LargeInt::LargeInt() {
 	this->symbol = 1;
-	this->data.push_back(0);
+	//this->data.push_back(0);
 }
 
 LargeInt::LargeInt(u32 val){
@@ -204,6 +204,7 @@ LargeInt LargeInt::operator+(const LargeInt &ano) const
 	if(this->symbol == ano.symbol){
 		res = naivePlus(*this, ano);
 		res.symbol = this->symbol;
+		res.arrange();
 		return res;
 	}
 	int sym = this->symbol;
@@ -268,7 +269,7 @@ LargeInt LargeInt::operator*(const LargeInt &ano) const
         mult = 0;
 
         // 补零
-        for (int i = 0; i < idx2; i++)
+        for (int i = 0;i < idx2; i++)
             tmp.data.push_back(0);
         for (int idx1 = 0; idx1 < len1; idx1++){
             value = (ull)(ano.data[idx2]) * (ull)(this->data[idx1]) + mult;
@@ -277,9 +278,10 @@ LargeInt LargeInt::operator*(const LargeInt &ano) const
         }
         if (mult)
             tmp.data.push_back((u32)mult);
-        
+
         res = res + tmp;
     }
+	//cout<<res<<endl;
 	res.symbol = this->symbol * ano.symbol;
     return res;
 }
@@ -301,16 +303,12 @@ LargeInt LargeInt::operator/(const LargeInt &ano) const{
     LargeInt tmp;
 	LargeInt cal;
 
-    for (int idx = len1 - len2 + 1; idx < len1; idx++)
-    {
+    for (int idx = len1 - len2 + 1; idx < len1; idx++){
         tmp.data.push_back(this->data[idx]);
     }
 
-	cout<<"begin /";
-
     // len1 >= len2
-    for (int idx = len1 - len2; idx >= 0; idx--)
-    {
+    for (int idx = len1 - len2; idx >= 0; idx--){
         tmp.data.insert(tmp.data.begin(), this->data[idx]);
         tmp.arrange();
 
@@ -320,7 +318,6 @@ LargeInt LargeInt::operator/(const LargeInt &ano) const{
 		if(tmp.naiveCompare(cal) >= 0)
 	        tmp = naiveMinus(tmp, cal);   // 余数
 
-		cout<<"value\t"<<value<<endl;
         res.data.insert(res.data.begin(), value); // 除法是由高位向低位进行，所以插入位置在begin
     }
 
@@ -337,8 +334,6 @@ u32 LargeInt::getMaxCycle(const LargeInt &A, const LargeInt &B) const{
     u32 quotient;
     u32 res = 0;
     bool flag = true;
-	
-	cout<<"**************while***********"<<endl;
 
     while(tmpA.naiveCompare(tmpB) >= 0){
         quotient = estimateQuotient(tmpA, tmpB);
@@ -352,18 +347,13 @@ u32 LargeInt::getMaxCycle(const LargeInt &A, const LargeInt &B) const{
 
         res = flag ? (res + quotient) : (res - quotient);
         flag = !flag;
-
-		cout<<res<<endl;
     }
 
     // 微调 
     while (res > 0 && (B * res) > A) {
-		cout<<"while loop"<<res<<endl;
-		cout<<A<<"\t"<<B<<endl;
 		res--;
 	}
 
-	cout<<"getMaxCycle res\t"<<res<<endl;
     return res;
 }
 
@@ -392,9 +382,7 @@ u32 LargeInt::estimateQuotient(const LargeInt &A, const LargeInt &B) const{
 
 
 LargeInt LargeInt::module(const LargeInt &ano) const{
-	cout<<"begin module"<<endl;
 	LargeInt quotient = *this / ano;
-	cout<<"quotient\t"<<quotient<<endl;
 	return *this - quotient * ano;
 }
 
