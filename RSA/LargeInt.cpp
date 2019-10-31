@@ -383,6 +383,15 @@ u32 LargeInt::estimateQuotient(const LargeInt &A, const LargeInt &B) const{
 
 LargeInt LargeInt::module(const LargeInt &ano) const{
 	LargeInt quotient = *this / ano;
+
+	//cout<<"***********"<<endl;
+	//cout<<ano<<endl;
+	//cout<<quotient<<endl;
+	//cout<<ano * quotient<<endl;
+	//cout<<*this<<endl;
+	//cout<<"***********"<<endl;
+
+	//return (*this).naiveMinus(*this, quotient * ano);
 	return *this - quotient * ano;
 }
 
