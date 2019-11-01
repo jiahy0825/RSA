@@ -7,6 +7,7 @@
 #include <random>
 #include <string.h>
 #include <assert.h>
+#include <gmp.h>
 
 
 using namespace std;
@@ -282,10 +283,50 @@ LargeInt LargeInt::operator*(const LargeInt &ano) const
 
         res = res + tmp;
     }
-	//cout<<res<<endl;
 	res.symbol = this->symbol * ano.symbol;
     return res;
 }
+
+
+//LargeInt LargeInt::operator/(const LargeInt &ano) const{
+//	if (ano.data.empty() || ano == LargeInt(0)){
+//		cout << "除零运算!!!" <<endl;
+//		return LargeInt();
+//	}
+//	if (naiveCompare(ano) == -1){
+//		return LargeInt(0);
+//	}
+//
+//    int len1 = this->data.size();
+//    int len2 = ano.data.size();
+//
+//    u32 value;
+//    LargeInt res;
+//    LargeInt tmp;
+//	LargeInt cal;
+//
+//    for (int idx = len1 - len2 + 1; idx < len1; idx++){
+//        tmp.data.push_back(this->data[idx]);
+//    }
+//
+//    // len1 >= len2
+//    for (int idx = len1 - len2; idx >= 0; idx--){
+//        tmp.data.insert(tmp.data.begin(), this->data[idx]);
+//        tmp.arrange();
+//
+//        value = getMaxCycle(tmp, ano); // 商
+//
+//		cal = ano * value;
+//		if(tmp.naiveCompare(cal) >= 0)
+//	        tmp = naiveMinus(tmp, cal);   // 余数
+//
+//        res.data.insert(res.data.begin(), value); // 除法是由高位向低位进行，所以插入位置在begin
+//    }
+//
+//    res.arrange();
+//	res.symbol = this->symbol * ano.symbol;
+//    return res;
+//}
 
 LargeInt LargeInt::operator/(const LargeInt &ano) const{
 	if (ano.data.empty() || ano == LargeInt(0)){
@@ -296,35 +337,42 @@ LargeInt LargeInt::operator/(const LargeInt &ano) const{
 		return LargeInt(0);
 	}
 
-    int len1 = this->data.size();
-    int len2 = ano.data.size();
+	mpz_t a, b, c;
+	mpz_init(a);
+	mpz_init_set_str(b, this->toString().c_str(), 16);  
+	mpz_init_set_str(c, ano.toString().c_str(), 16); 
+	mpz_fdiv_q(a, b, c);
+	char* buff = new char[3000];
+	gmp_sprintf(buff, "%Zx", a);
+	string str(buff);
+	LargeInt res;
+	res.transform(str);
+	
 
-    u32 value;
-    LargeInt res;
-    LargeInt tmp;
-	LargeInt cal;
+	//cout<<str<<endl;
+	//cout<<res<<endl;
 
-    for (int idx = len1 - len2 + 1; idx < len1; idx++){
-        tmp.data.push_back(this->data[idx]);
-    }
-
-    // len1 >= len2
-    for (int idx = len1 - len2; idx >= 0; idx--){
-        tmp.data.insert(tmp.data.begin(), this->data[idx]);
-        tmp.arrange();
-
-        value = getMaxCycle(tmp, ano); // 商
-
-		cal = ano * value;
-		if(tmp.naiveCompare(cal) >= 0)
-	        tmp = naiveMinus(tmp, cal);   // 余数
-
-        res.data.insert(res.data.begin(), value); // 除法是由高位向低位进行，所以插入位置在begin
-    }
-
-    res.arrange();
-	res.symbol = this->symbol * ano.symbol;
+	delete[] buff;
     return res;
+}
+
+LargeInt LargeInt::module(const LargeInt &ano) const{
+	mpz_t a, b, c;
+	mpz_init(a);
+	mpz_init_set_str(b, this->toString().c_str(), 16);
+	mpz_init_set_str(c, ano.toString().c_str(), 16);
+	mpz_fdiv_r(a, b, c);
+	char* buff = new char[3000];
+	gmp_sprintf(buff, "%Zx", a);
+	string str(buff);
+	LargeInt res;
+	res.transform(str);
+
+	delete[] buff;
+	return res;
+
+	//LargeInt quotient = *this / ano;
+	//return *this - quotient * ano;
 }
 
 // 计算商值
@@ -396,48 +444,48 @@ u32 LargeInt::estimateQuotient(const LargeInt &A, const LargeInt &B) const{
 //	//return (*this).naiveMinus(*this, quotient * ano);
 //}
 
-LargeInt LargeInt::module(const LargeInt &ano) const{
-	if (ano.data.empty() || ano == LargeInt(0)){
-		cout << "模零运算!!!" <<endl;
-		return LargeInt();
-	}
-
-	int comRes = this->naiveCompare(ano);
-	if(comRes < 0){
-		return *this;
-	}else if(comRes == 0){
-		return LargeInt(0);
-	}
-
-    int len1 = this->data.size();
-    int len2 = ano.data.size();
-
-	//cout<<"len1\t"<<len1<<"\tlen2\t"<<len2<<endl;
-
-    u32 value;
-    LargeInt tmp;
-	LargeInt cal;
-	//cout<<"module init"<<endl;
-    for (int idx = len1 - len2 + 1; idx < len1; idx++){
-        tmp.data.push_back(this->data[idx]);
-    }
-	//cout<<"module mid"<<endl;
-    // len1 >= len2
-    for (int idx = len1 - len2; idx >= 0; idx--){
-        tmp.data.insert(tmp.data.begin(), this->data[idx]);
-        tmp.arrange();
-
-        value = getMaxCycle(tmp, ano); // 商
-
-		cal = ano * value;
-		if(tmp.naiveCompare(cal) >= 0)
-	        tmp = naiveMinus(tmp, cal);   // 余数
-		//cout<<"idx"<<idx<<endl;
-    }
-	tmp.arrange();
-	//cout<<"module finish"<<endl;
-    return tmp;
-}
+//LargeInt LargeInt::module(const LargeInt &ano) const{
+//	if (ano.data.empty() || ano == LargeInt(0)){
+//		cout << "模零运算!!!" <<endl;
+//		return LargeInt();
+//	}
+//
+//	int comRes = this->naiveCompare(ano);
+//	if(comRes < 0){
+//		return *this;
+//	}else if(comRes == 0){
+//		return LargeInt(0);
+//	}
+//
+//    int len1 = this->data.size();
+//    int len2 = ano.data.size();
+//
+//	//cout<<"len1\t"<<len1<<"\tlen2\t"<<len2<<endl;
+//
+//    u32 value;
+//    LargeInt tmp;
+//	LargeInt cal;
+//	//cout<<"module init"<<endl;
+//    for (int idx = len1 - len2 + 1; idx < len1; idx++){
+//        tmp.data.push_back(this->data[idx]);
+//    }
+//	//cout<<"module mid"<<endl;
+//    // len1 >= len2
+//    for (int idx = len1 - len2; idx >= 0; idx--){
+//        tmp.data.insert(tmp.data.begin(), this->data[idx]);
+//        tmp.arrange();
+//
+//        value = getMaxCycle(tmp, ano); // 商
+//
+//		cal = ano * value;
+//		if(tmp.naiveCompare(cal) >= 0)
+//	        tmp = naiveMinus(tmp, cal);   // 余数
+//		//cout<<"idx"<<idx<<endl;
+//    }
+//	tmp.arrange();
+//	//cout<<"module finish"<<endl;
+//    return tmp;
+//}
 
 int get_random(int bits){
 	u32 res = 0;
@@ -521,4 +569,24 @@ string LargeInt::toBinString() const{
 ostream &operator<<(ostream &output, const LargeInt &ano){
 	output << ano.toString();
 	return output; 
+}
+
+void LargeInt::transform(string& str){
+	int len = str.length();
+	string s;
+	if(str[0] == '-'){
+		this->symbol = -1;
+		str = str.substr(1);
+		len -= 1;
+	}
+	while(len >= VAL_LEN){
+		s = str.substr(len - VAL_LEN, VAL_LEN);
+		this->data.push_back(strtol(s.c_str(), NULL, 16));
+		len -= VAL_LEN;
+	}
+	if(len > 0){
+		s = str.substr(0, len);
+		this->data.push_back(strtol(s.c_str(), NULL, 16));
+	}
+	this->arrange(); // 去零
 }

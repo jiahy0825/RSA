@@ -1,7 +1,7 @@
 #include "Generator.h"
+#include <gmp.h>
 
-LargeInt exponent(LargeInt& a, LargeInt& b, LargeInt& n){
-	//cout<<"******exponent*********"<<endl;
+LargeInt exponent2(LargeInt& a, LargeInt& b, LargeInt& n){
 	LargeInt res(1);
 	string str = b.toBinString();
 	int i = 0;
@@ -10,34 +10,24 @@ LargeInt exponent(LargeInt& a, LargeInt& b, LargeInt& n){
 		if(c == '1'){
 			res = (res * a).module(n);
 		}
-		cout<<c;
 	}
-	//cout<<"******exponent*********"<<endl;
 	return res;
 }
 
-bool witness(LargeInt& a, LargeInt& n){
+bool witness2(LargeInt& a, LargeInt& n){
 	LargeInt minusOne;
 	minusOne = n - 1;
 	LargeInt tmp(2);
 	int t = 0;
-	cout<<"witness init finish"<<endl;
 	while(minusOne.module(tmp) == 0){
 		tmp = tmp * 2;
 		t += 1;
 	}
-	//cout<<"witness while finish t number:\t"<<t<<endl;
 	tmp = tmp / 2;
 	LargeInt u = minusOne / tmp;
-	cout<<"witness exponent begin a:\t"<<a<<endl;
-	cout<<"witness exponent begin u:\t"<<u<<endl;
-	cout<<"witness exponent begin n:\t"<<n<<endl;
 
-	LargeInt x0 = exponent(a, u, n);
-
-	cout<<"x0\t"<<x0<<endl;
+	LargeInt x0 = exponent2(a, u, n);
 	LargeInt x1 = x0;
-	//cout<<"witness for begin x1:\t"<<x1<<endl;
 	for(int i = 0;i < t;i++){
 		x1 = (x0 * x0).module(n);
 		if(x1 == 1 && x0 != 1 && x0 != minusOne){
@@ -46,48 +36,128 @@ bool witness(LargeInt& a, LargeInt& n){
 			return true;
 		}
 		x0 = x1;
-		//cout<<"x1"<<x1<<endl;
 	}
-	//cout<<"witness for finish x1:\t"<<x1<<endl;
-	cout<<"x1\t"<<x1<<endl;
 	if(x1 != 1)
 		return true;
 	return false;
 }
 
-// s为循环次数
-//bool millerRabin(LargeInt& n, int bits, int s){
-//	LargeInt tmp;
-//	for(int i = 0;i < s;i++){
-//		tmp.generateRandom(bits - 1);
-//		if(witness(tmp, n)){
-//			return true;
-//		}
-//	}
-//	return false;
-//}
-
-bool millerRabin(LargeInt& n, int bits, int s){
+bool millerRabin2(LargeInt& n, int bits, int s){
 	LargeInt tmp;
 	int arr[13] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
 	for(int i = 0;i < 13;i++){
-		//tmp.generateRandom(bits - 1);
 		tmp = LargeInt(arr[i]);
-		if(witness(tmp, n)){
+		if(witness2(tmp, n)){
 			return true;
 		}
 	}
 	return false;
 }
 
-LargeInt primeGenerate(int bits){
+LargeInt primeGenerate2(int bits){
 	LargeInt res;
 	res.generateRandom(bits);
 	int i = 0;
-	while(millerRabin(res, bits, 1)){
-		cout<<"*********** gene iter\t" << i++ << "\t*************"<<endl;
+	while(millerRabin2(res, bits, 1)){
+		/*cout<<"*********** gene iter\t" << i++ << "\t*************"<<endl;*/
 		res.generateRandom(bits);
-		_sleep(1000);
 	}
+	return res;
+}
+
+
+void exponent(mpz_t& res, mpz_t& a, mpz_t& b, mpz_t& n){
+	mpz_powm_sec(res, a, b, n);
+}
+
+bool witness(mpz_t& a, mpz_t& n){
+	mpz_t minusOne;
+	mpz_t zero;
+	mpz_t one;
+	mpz_t two;
+
+	mpz_t tmp;
+	mpz_t mid;
+	mpz_init(minusOne);
+	mpz_init(mid);
+	mpz_init_set_str(tmp, "1", 10); 
+	mpz_init_set_str(zero, "0", 10);  
+	mpz_init_set_str(one, "1", 10);  
+	mpz_init_set_str(two, "2", 10);  
+	
+	mpz_sub(minusOne, n, one);
+
+	int t = 0;
+	do{
+		mpz_mul(tmp, tmp, two);
+		t += 1;
+		mpz_fdiv_r(mid, minusOne,tmp);
+	}while(mpz_cmp(mid, zero) == 0);
+	t -= 1;
+	mpz_fdiv_q(tmp, tmp, two);
+
+	mpz_t u;
+	mpz_init(u);
+	mpz_fdiv_q(u, minusOne, tmp);
+
+	mpz_t x0;
+	mpz_t x1;
+	mpz_init(x0);
+	mpz_init(x1);
+	exponent(x0, a, u, n);
+	mpz_set(x1, x0);
+
+	for(int i = 0;i < t;i++){
+		mpz_powm_sec(x1, x0, two, n);
+		if(mpz_cmp(x1, one) == 0 && mpz_cmp(x0, one) != 0 && mpz_cmp(x0, minusOne) != 0){
+			return true;
+		}
+		mpz_set(x0, x1);
+	}
+	if(mpz_cmp(x1, one) != 0)
+		return true;
+
+	mpz_clear(minusOne);
+	mpz_clear(zero);
+	mpz_clear(one);
+	mpz_clear(two);
+	mpz_clear(tmp);
+	mpz_clear(mid);
+	mpz_clear(u);
+	mpz_clear(x0);
+	mpz_clear(x1);
+	return false;
+}
+
+bool millerRabin(mpz_t& n, int bits, int s){
+	LargeInt tmp;
+	mpz_t b;
+	int arr[13] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+	for(int i = 0;i < 13;i++){
+		tmp = LargeInt(arr[i]);
+		mpz_init_set_str(b, tmp.toString().c_str(), 16);
+		if(witness(b, n)){
+			return true;
+		}
+	}
+	mpz_clear(b);
+	return false;
+}
+
+LargeInt primeGenerate(int bits){
+	LargeInt res;
+	mpz_t a;
+	
+	res.generateRandom(bits);
+	mpz_init_set_str(a, res.toString().c_str(), 16);  
+
+	int i = 0;
+	while(millerRabin(a, bits, 1)){
+		//cout<<"*********** gene iter\t" << i++ << "\t*************"<<endl;
+		res.generateRandom(bits);
+		mpz_init_set_str(a, res.toString().c_str(), 16);
+	}
+
+	mpz_clear(a);
 	return res;
 }

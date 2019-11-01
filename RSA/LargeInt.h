@@ -11,7 +11,7 @@ typedef unsigned int u32;
 typedef unsigned long long ull;
 
 #define MAX_VALUE (1 << 28) // 
-// #define VAL_LEN 9
+#define VAL_LEN 7
 #define FORMAT_STR "%07x"
 
 // 支持负数加减
@@ -20,7 +20,7 @@ typedef unsigned long long ull;
 class LargeInt{
 private:
 	// 保存数据
-    
+	vector<u32>  data;
 	// 保存正负号
 	int symbol;
 
@@ -32,8 +32,6 @@ private:
     u32 getMaxCycle(const LargeInt &anoA, const LargeInt &anoB) const;
 
 public:
-	vector<u32>  data;
-
     LargeInt();
     LargeInt(u32 val);
     //LargeInt(const std::string &valStr);
@@ -61,6 +59,7 @@ public:
     string toString() const;
 	string toBinString() const;
 	friend ostream &operator<<(ostream &output, const LargeInt &ano);
+	void transform(string& str);
 };
 
 #endif

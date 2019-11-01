@@ -78,14 +78,19 @@ void test_Div(){
 		tmp2 = tmp2 * t;
 	tmp2 = tmp2 + 1;
 	
+
 	//LargeInt n(1234535);
 	//cout<<"test_Div\t"<<tmp2.module(n)<<endl;
 
+	//cout<<tmp<<endl;
+	tmp2 = LargeInt(0) - tmp2;
+
 	LargeInt res = tmp / tmp2;
 
-	//cout<<tmp<<endl;
-	//cout<<tmp2<<endl;
-	//cout<<res<<endl;
+	//cout<<"tmp\t"<<tmp<<endl;
+	//cout<<"mul\t"<<(tmp2 * res) / 16<<endl;
+	//cout<<"tmp2\t"<<tmp2<<endl;
+	//cout<<"res\t"<<res<<endl;
 
 	cout<<"divided\t"<<tmp2<<endl;
 	cout<<"posi\t"<<(tmp - tmp2 * res)<<endl;
@@ -93,28 +98,28 @@ void test_Div(){
 	cout<<"**********test_Div**********"<<endl;
 }
 
-void test_Module(){
-	//cout<<"**********test_Module**********"<<endl;
-	int i = 0;
-	LargeInt tmp = LargeInt(3);
-	while (i < 9){
-		tmp = tmp * tmp;
-		i += 1;
-	}
-	LargeInt n(1234535);
-
-	cout<<tmp<<endl;
-	tmp = tmp.module(n);
-	cout<<tmp<<endl;
-
-	LargeInt t1(3);
-	LargeInt t2(512);
-	LargeInt tmp2 = exponent(t1, t2, n);
-
-	cout<<tmp2<<endl;
-
-	cout<<"**********test_Module\t"<< tmp2 - tmp <<"\t**********"<<endl;
-}
+//void test_Module(){
+//	//cout<<"**********test_Module**********"<<endl;
+//	int i = 0;
+//	LargeInt tmp = LargeInt(3);
+//	while (i < 9){
+//		tmp = tmp * tmp;
+//		i += 1;
+//	}
+//	LargeInt n(1234535);
+//
+//	cout<<tmp<<endl;
+//	tmp = tmp.module(n);
+//	cout<<tmp<<endl;
+//
+//	LargeInt t1(3);
+//	LargeInt t2(512);
+//	LargeInt tmp2 = exponent(t1, t2, n);
+//
+//	cout<<tmp2<<endl;
+//
+//	cout<<"**********test_Module\t"<< tmp2 - tmp <<"\t**********"<<endl;
+//}
 
 void test_BinaryStr1(){
 	LargeInt tmp = LargeInt(3);
@@ -159,7 +164,7 @@ void test_random(){
 		res.generateRandom(512);
 		cout<<"********"<<i<<"****************"<<endl;
 		cout<<res<<endl;
-		cout<<"size"<<res.data.size()<<endl;
+		//cout<<"size"<<res.data.size()<<endl;
 	}
 }
 
@@ -191,19 +196,68 @@ void test_Chinese(){
 }
 
 void test_gmp(){
-	mpz_t t; //mpz_t 为GMP内置大数类型
-	mpz_init(t); //大数t使用前要进行初始化，以便动态分配空间
-	mpz_ui_pow_ui(t, 2, 100); //GMP所有函数基本都是以mpz打头
-	gmp_printf("2^100=%Zd\n", t); //输出大数，大数的格式化标志为%Zd
-	mpz_clear(t);
+	LargeInt tmp = LargeInt(100);
+	int i = 0;
+	while (i < 5){
+		tmp = tmp * tmp;
+		i += 1;
+	}
+	cout<<tmp<<endl;
+
+	mpz_t t;
+	string str = tmp.toString();
+	const char *cstr = str.c_str();
+	mpz_init_set_str(t, cstr, 16);
+
+	char* buff = new char[1000];
+	gmp_sprintf(buff, "%Zx\n", t);
+	string retStr(buff);
+
+	cout<<retStr<<endl;
+
+	mpz_t a, b, c;  
+	mpz_init(a);  
+	mpz_init_set_str(b, "abcde", 16);  
+	mpz_init_set_str(c, "-1a0", 16); 
+	mpz_fdiv_q (a, b, c);
+	gmp_printf("%Zx\n", a);
+
+	//mpz_t t; //mpz_t 为GMP内置大数类型
+	//mpz_init(t); //大数t使用前要进行初始化，以便动态分配空间
+	//mpz_ui_pow_ui(t, 2, 2000); //GMP所有函数基本都是以mpz打头
+	//gmp_printf("2^100=%Zd\n", t); //输出大数，大数的格式化标志为%Zd
+	//mpz_clear(t);
+}
+
+void test(){
+	LargeInt res(1234567);
+	res = LargeInt(0) - res;
+	cout<<res<<endl;
+	LargeInt tmp;
+	tmp.transform(res.toString());
+	cout<<tmp<<endl;
+}
+
+void test_prime(){
+	LargeInt res;
+	while(true){
+		res = primeGenerate(2048);
+		mpz_t a;
+		mpz_init_set_str(a, res.toString().c_str(), 16);  
+		cout<<"isPrime\t"<<mpz_probab_prime_p(a, 10)<<endl;
+		_sleep(500);
+	}
 }
 
 int main(){
 	srand(time(0));
 
-	test_gmp();
+	//test();
+
+	//test_gmp();
 
 	//test_gene();
+	test_prime();
 
 	//test_random();
 
