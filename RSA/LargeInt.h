@@ -20,7 +20,7 @@ typedef unsigned long long ull;
 class LargeInt{
 private:
 	// 保存数据
-    vector<u32>  data;
+    
 	// 保存正负号
 	int symbol;
 
@@ -32,6 +32,8 @@ private:
     u32 getMaxCycle(const LargeInt &anoA, const LargeInt &anoB) const;
 
 public:
+	vector<u32>  data;
+
     LargeInt();
     LargeInt(u32 val);
     //LargeInt(const std::string &valStr);
@@ -45,6 +47,7 @@ public:
     LargeInt operator/(const LargeInt &ano) const;
 
 	LargeInt module(const LargeInt &ano) const;
+	void generateRandom(int bits);
 
     // 比较运算符重载
     bool operator==(const LargeInt &ano) const;

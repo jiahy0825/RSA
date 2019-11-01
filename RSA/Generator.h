@@ -12,4 +12,8 @@ extern class LargeInt;
 // (a ^ b) mod n
 LargeInt exponent(LargeInt& a, LargeInt& b, LargeInt& n);
 
+bool millerRabin(LargeInt& n, int bits, int s);
+
+LargeInt primeGenerate(int bits);
+
 #endif

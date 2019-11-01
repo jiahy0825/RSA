@@ -4,6 +4,7 @@
 #include <vector>
 #include <bitset>
 #include <cstring>
+#include <random>
 #include <string.h>
 #include <assert.h>
 
@@ -381,18 +382,95 @@ u32 LargeInt::estimateQuotient(const LargeInt &A, const LargeInt &B) const{
 }
 
 
+//LargeInt LargeInt::module(const LargeInt &ano) const{
+//	LargeInt quotient = *this / ano;
+//	return *this - quotient * ano;
+//
+//	//cout<<"***********"<<endl;
+//	//cout<<ano<<endl;
+//	//cout<<quotient<<endl;
+//	//cout<<ano * quotient<<endl;
+//	//cout<<*this<<endl;
+//	//cout<<"***********"<<endl;
+//
+//	//return (*this).naiveMinus(*this, quotient * ano);
+//}
+
 LargeInt LargeInt::module(const LargeInt &ano) const{
-	LargeInt quotient = *this / ano;
+	if (ano.data.empty() || ano == LargeInt(0)){
+		cout << "模零运算!!!" <<endl;
+		return LargeInt();
+	}
 
-	//cout<<"***********"<<endl;
-	//cout<<ano<<endl;
-	//cout<<quotient<<endl;
-	//cout<<ano * quotient<<endl;
-	//cout<<*this<<endl;
-	//cout<<"***********"<<endl;
+	int comRes = this->naiveCompare(ano);
+	if(comRes < 0){
+		return *this;
+	}else if(comRes == 0){
+		return LargeInt(0);
+	}
 
-	//return (*this).naiveMinus(*this, quotient * ano);
-	return *this - quotient * ano;
+    int len1 = this->data.size();
+    int len2 = ano.data.size();
+
+	//cout<<"len1\t"<<len1<<"\tlen2\t"<<len2<<endl;
+
+    u32 value;
+    LargeInt tmp;
+	LargeInt cal;
+	//cout<<"module init"<<endl;
+    for (int idx = len1 - len2 + 1; idx < len1; idx++){
+        tmp.data.push_back(this->data[idx]);
+    }
+	//cout<<"module mid"<<endl;
+    // len1 >= len2
+    for (int idx = len1 - len2; idx >= 0; idx--){
+        tmp.data.insert(tmp.data.begin(), this->data[idx]);
+        tmp.arrange();
+
+        value = getMaxCycle(tmp, ano); // 商
+
+		cal = ano * value;
+		if(tmp.naiveCompare(cal) >= 0)
+	        tmp = naiveMinus(tmp, cal);   // 余数
+		//cout<<"idx"<<idx<<endl;
+    }
+	tmp.arrange();
+	//cout<<"module finish"<<endl;
+    return tmp;
+}
+
+int get_random(int bits){
+	u32 res = 0;
+	if(bits == 28){
+		res = (u32)((rand() * 1.0 / RAND_MAX) * MAX_VALUE);
+	}else{
+		res = (u32)((rand() * 1.0 / RAND_MAX) * pow(2, bits));
+	}
+	if(res == 0)
+		res += 1;
+	return res;
+}
+
+void LargeInt::generateRandom(int bits){
+	this->data = vector<u32>((bits + 27) / 28, 0);
+	int index = 0;
+	u32 ran = 0;
+	while(bits > 28){
+		ran = get_random(28);
+		if(index == 0 && ran % 2 == 0){
+			ran -= 1;
+		}
+		this->data[index++] = ran;
+		bits -= 28;
+	}
+	if(bits != 0){
+		ran = get_random(bits);
+		if(index == 0 && ran % 2 == 0){
+			ran -= 1;
+		}
+		this->data[index++] = ran;
+	}
+	this->arrange();
 }
 
 string LargeInt::toString() const{
@@ -433,6 +511,7 @@ string LargeInt::toBinString() const{
 			num >>= 1;
 		}
 		reverse(tmp.begin(), tmp.end());
+		assert(tmp.length() >= 0 && tmp.length() <= 28);
 		tmp = string(28 - tmp.length(), '0') + tmp;
 		res += tmp;
 	}

@@ -4,6 +4,10 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <ctime>
+
+#include <gmp.h>
+//#pragma  comment(lib,"libgmp.lib")
 
 using namespace std;
 
@@ -99,15 +103,15 @@ void test_Module(){
 	}
 	LargeInt n(1234535);
 
-	////cout<<tmp<<endl;
+	cout<<tmp<<endl;
 	tmp = tmp.module(n);
-	//cout<<tmp<<endl;
+	cout<<tmp<<endl;
 
 	LargeInt t1(3);
 	LargeInt t2(512);
 	LargeInt tmp2 = exponent(t1, t2, n);
 
-	//cout<<tmp2<<endl;
+	cout<<tmp2<<endl;
 
 	cout<<"**********test_Module\t"<< tmp2 - tmp <<"\t**********"<<endl;
 }
@@ -146,7 +150,62 @@ void test_Minus(){
 	cout<<tmp1 - tmp2<<endl;
 }
 
+void test_random(){
+	/*for(int i = 0;i < 10;i++)
+		cout<<rand()<<endl;
+	cout<<RAND_MAX<<endl;*/
+	LargeInt res;
+	for (int i = 0;i < 10;i++){
+		res.generateRandom(512);
+		cout<<"********"<<i<<"****************"<<endl;
+		cout<<res<<endl;
+		cout<<"size"<<res.data.size()<<endl;
+	}
+}
+
+void test_gene(){
+	LargeInt res = primeGenerate(1024);
+	cout<<res<<endl;
+	//LargeInt res(263167);
+	//cout<<exponent(LargeInt(3), res - 1, res)<<endl;
+	//cout<<millerRabin(res, 0, 0)<<endl;
+}
+
+void test_Chinese(){
+	/*string str;
+	cin >> str;
+	cout<<"输出"<<endl;
+	cout<<str<<endl;
+	cout<<str.length()<<endl;
+	for(int i = 0;i < str.length();i++)
+		cout<<(unsigned int)str[i]<<endl;
+*/
+	string tmp(6, '0');
+	tmp[0] = (unsigned int)4294967254;
+	tmp[1] = (unsigned int)4294967248;
+	tmp[2] = (unsigned int)4294967246;
+	tmp[3] = (unsigned int)4294967236;
+	tmp[4] = (unsigned int)111;
+	tmp[5] = (unsigned int)107;
+	cout<<tmp<<endl;
+}
+
+void test_gmp(){
+	mpz_t t; //mpz_t 为GMP内置大数类型
+	mpz_init(t); //大数t使用前要进行初始化，以便动态分配空间
+	mpz_ui_pow_ui(t, 2, 100); //GMP所有函数基本都是以mpz打头
+	gmp_printf("2^100=%Zd\n", t); //输出大数，大数的格式化标志为%Zd
+	mpz_clear(t);
+}
+
 int main(){
+	srand(time(0));
+
+	test_gmp();
+
+	//test_gene();
+
+	//test_random();
 
 	//test_EGCD();
 
@@ -160,6 +219,8 @@ int main(){
 	//test_BinaryStr2();
 
 	//test_Minus();
+
+	//test_Chinese();
 
 	system("Pause");
 	return 0;
