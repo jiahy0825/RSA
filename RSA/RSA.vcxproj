@@ -66,11 +66,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Crypt.cpp" />
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="LargeInt.cpp" />
     <ClCompile Include="源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Crypt.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="LargeInt.h" />
   </ItemGroup>

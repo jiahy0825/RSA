@@ -1,5 +1,6 @@
 #include "LargeInt.h"
 #include "Generator.h"
+#include "Crypt.h"
 
 #include <iostream>
 #include <cmath>
@@ -33,7 +34,6 @@ void egcd(int a, int b){
 		f = t;
 	}
 	cout << a << "=" << u << "\t*\t" << A << "\t+\t" << v << "\t*\t" << B << endl;
-	
 }
 
 void test_EGCD(){
@@ -241,7 +241,7 @@ void test(){
 void test_prime(){
 	LargeInt res;
 	while(true){
-		res = primeGenerate(2048);
+		res = primeGenerate(1024);
 		mpz_t a;
 		mpz_init_set_str(a, res.toString().c_str(), 16);  
 		cout<<"isPrime\t"<<mpz_probab_prime_p(a, 10)<<endl;
@@ -249,15 +249,40 @@ void test_prime(){
 	}
 }
 
+void test_crypt(){
+	Crypt cy;
+	cy.generateKey(1024);
+	cy.output();
+
+	cy.generateED(LargeInt(10001));
+	cy.output();
+
+	//cy.setpqe(3, 11, 3);
+	//cy.output();
+
+	//cy.setpqe(43, 59, 13);
+	//cy.output();
+
+	//cy.setpqe(43, 59, 2);
+	//cy.output();
+
+	/*egcd(3, 20);
+	egcd(13, 2436);
+	egcd(4, 1326);
+*/
+}
+
 int main(){
 	srand(time(0));
+
+	test_crypt();
 
 	//test();
 
 	//test_gmp();
 
 	//test_gene();
-	test_prime();
+	//test_prime();
 
 	//test_random();
 

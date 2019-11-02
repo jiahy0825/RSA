@@ -1,10 +1,10 @@
-﻿生成启动时间为 2019/11/1 21:44:30。
+﻿生成启动时间为 2019/11/2 10:35:00。
      1>项目“C:\Users\jiahy\Desktop\RSA\RSA\RSA.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\Users\jiahy\Desktop\GMPforWin /IC:\MinGW\include /ZI /nologo /W3 /WX- /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Generator.cpp "源.cpp"
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\Users\jiahy\Desktop\GMPforWin /IC:\MinGW\include /ZI /nologo /W3 /WX- /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Crypt.cpp "源.cpp"
          源.cpp
-     1>c:\users\jiahy\desktop\rsa\rsa\generator.h(10): warning C4091: “extern ”: 没有声明变量时忽略“LargeInt”的左侧
      1>c:\users\jiahy\desktop\gmpforwin\gmp.h(2126): warning C4146: 一元负运算符应用于无符号类型，结果仍为无符号类型
+     1>c:\users\jiahy\desktop\rsa\rsa\generator.h(11): warning C4091: “extern ”: 没有声明变量时忽略“LargeInt”的左侧
      1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(189): warning C4305: “=”: 从“unsigned int”到“char”截断
      1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(189): warning C4309: “=”: 截断常量值
      1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(190): warning C4305: “=”: 从“unsigned int”到“char”截断
@@ -15,13 +15,14 @@
      1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(192): warning C4309: “=”: 截断常量值
      1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(248): warning C4996: '_sleep': This function or variable has been superceded by newer library or operating system functionality. Consider using Sleep instead. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdlib.h(881) : 参见“_sleep”的声明
-     1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(253): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
-         Generator.cpp
-     1>c:\users\jiahy\desktop\rsa\rsa\generator.h(10): warning C4091: “extern ”: 没有声明变量时忽略“LargeInt”的左侧
+     1>c:\users\jiahy\desktop\rsa\rsa\源.cpp(276): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+         Crypt.cpp
      1>c:\users\jiahy\desktop\gmpforwin\gmp.h(2126): warning C4146: 一元负运算符应用于无符号类型，结果仍为无符号类型
+     1>c:\users\jiahy\desktop\rsa\rsa\generator.h(11): warning C4091: “extern ”: 没有声明变量时忽略“LargeInt”的左侧
          正在生成代码...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\jiahy\Desktop\RSA\Debug\RSA.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\jiahy\Desktop\GMPforWin "libgmp-10.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\jiahy\Desktop\RSA\Debug\RSA.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\jiahy\Desktop\RSA\Debug\RSA.lib" /MACHINE:X86 Debug\Generator.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\jiahy\Desktop\RSA\Debug\RSA.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\jiahy\Desktop\GMPforWin "libgmp-10.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\jiahy\Desktop\RSA\Debug\RSA.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\jiahy\Desktop\RSA\Debug\RSA.lib" /MACHINE:X86 Debug\Crypt.obj
+         Debug\Generator.obj
          Debug\LargeInt.obj
          "Debug\源.obj"
          RSA.vcxproj -> C:\Users\jiahy\Desktop\RSA\Debug\RSA.exe
@@ -29,4 +30,4 @@
 
 生成成功。
 
-已用时间 00:00:01.61
+已用时间 00:00:01.28
