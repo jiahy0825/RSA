@@ -272,10 +272,35 @@ void test_crypt(){
 */
 }
 
+void test_encode(){
+	Crypt cy;
+	cy.generateKey(1024 / 2);
+
+	cy.generateED(LargeInt(10001));
+	cy.output();
+
+	string str = "";
+	getline(cin, str);
+	//cin>>str;
+	cout<<str<<"\tlength\t"<<str.length()<<endl;
+
+	string out = "";
+	out = cy.encode(str);
+	//cout<<"encode:\t"<<out<<endl;
+
+	string de = "";
+	de = cy.decode(out);
+
+	cout<<"decode:\t"<<de<<endl;
+	
+}
+
 int main(){
 	srand(time(0));
 
-	test_crypt();
+	test_encode();
+
+	//test_crypt();
 
 	//test();
 

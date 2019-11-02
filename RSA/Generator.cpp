@@ -1,5 +1,6 @@
 #include "Generator.h"
 #include <gmp.h>
+#include <vector>
 
 LargeInt exponent2(LargeInt& a, LargeInt& b, LargeInt& n){
 	LargeInt res(1);
@@ -44,8 +45,8 @@ bool witness2(LargeInt& a, LargeInt& n){
 
 bool millerRabin2(LargeInt& n, int bits, int s){
 	LargeInt tmp;
-	int arr[13] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
-	for(int i = 0;i < 13;i++){
+	int arr[25] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+	for(int i = 0;i < 25;i++){
 		tmp = LargeInt(arr[i]);
 		if(witness2(tmp, n)){
 			return true;
@@ -129,11 +130,34 @@ bool witness(mpz_t& a, mpz_t& n){
 	return false;
 }
 
-bool millerRabin(mpz_t& n, int bits, int s){
+//vector<int> primes;
+
+vector<int> initPrimes(int nums){
+	bool* flag = new bool[nums + 1];
+	memset(flag, 0, sizeof(bool) * (nums + 1));
+	vector<int> prime;
+	int cnt = 0;
+	for(int i = 2;i <= nums;i++){
+		if(!flag[i]){
+			prime.push_back(i);
+			cnt++;
+		}
+		for(int j = 0;j < cnt;j++){
+			if(i * prime[j] > nums)
+				break;
+			flag[prime[j] * i] = 1;
+			if(i % prime[j] == 0)
+				break;
+		}
+	}
+	return prime;
+}
+
+bool millerRabin(mpz_t& n){
 	LargeInt tmp;
 	mpz_t b;
-	int arr[13] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
-	for(int i = 0;i < 13;i++){
+	vector<int> arr = initPrimes(1000);
+	for(int i = 0;i < arr.size();i++){
 		tmp = LargeInt(arr[i]);
 		mpz_init_set_str(b, tmp.toString().c_str(), 16);
 		if(witness(b, n)){
@@ -152,7 +176,7 @@ LargeInt primeGenerate(int bits){
 	mpz_init_set_str(a, res.toString().c_str(), 16);  
 
 	int i = 0;
-	while(millerRabin(a, bits, 1)){
+	while(millerRabin(a)){
 		//cout<<"*********** gene iter\t" << i++ << "\t*************"<<endl;
 		res.generateRandom(bits);
 		mpz_init_set_str(a, res.toString().c_str(), 16);
