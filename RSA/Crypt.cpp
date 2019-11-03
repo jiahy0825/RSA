@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "Crypt.h"
 #include "Generator.h"
 
@@ -51,11 +53,16 @@ void Crypt::generateED(LargeInt& tmp){
 	this->e = tmp;
 	//this->e.generateRandom(28);
 	LargeInt one = e_gcd(this->e, this->phi);
-	if(one != 1){
-		cout<< "e 不可逆, gcd:\t" << one << endl;
-	}else{
-		//cout<< "生成完毕 d:\t" << this->d << endl;
+	while(one != 1){
+		this->e.generateRandom(16);
+		this->e = this->e + 12340;
+		one = e_gcd(this->e, this->phi);
 	}
+	//if(one != 1){
+	//	//cout<< "e 不可逆, gcd:\t" << one << endl;
+	//}else{
+	//	//cout<< "生成完毕 d:\t" << this->d << endl;
+	//}
 }
 
 string c2str(char c){
@@ -151,8 +158,8 @@ string Crypt::decode(string& str){
 	LargeInt num;
 	num.transform(str);
 	LargeInt code;
-	code = exponent2(num, this->d, this->n);
-	//code = expoCRT(num, this->d, this->n, this->p, this->q);
+	//code = exponent2(num, this->d, this->n);
+	code = expoCRT(num, this->d, this->n, this->p, this->q);
 	string res = code.toString();
 	res = str2word(res);
 	return res;

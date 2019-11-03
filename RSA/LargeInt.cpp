@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "LargeInt.h"
 #include <iostream>
 #include <cmath>
@@ -287,6 +289,9 @@ LargeInt LargeInt::operator*(const LargeInt &ano) const
     return res;
 }
 
+/*----------------------------------*/
+/*	  自定义除法运算-复杂度过高	    */
+/*----------------------------------*/
 
 //LargeInt LargeInt::operator/(const LargeInt &ano) const{
 //	if (ano.data.empty() || ano == LargeInt(0)){

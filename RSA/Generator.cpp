@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "Generator.h"
 #include <gmp.h>
 #include <vector>
@@ -156,7 +158,7 @@ vector<int> initPrimes(int nums){
 bool millerRabin(mpz_t& n){
 	LargeInt tmp;
 	mpz_t b;
-	vector<int> arr = initPrimes(1000);
+	vector<int> arr = initPrimes(5000);
 	for(int i = 0;i < arr.size();i++){
 		tmp = LargeInt(arr[i]);
 		mpz_init_set_str(b, tmp.toString().c_str(), 16);

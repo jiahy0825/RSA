@@ -6,15 +6,16 @@
 
 class Crypt{
 private:
-	LargeInt p;
-	LargeInt q;
 	LargeInt n;
 	LargeInt phi;
-	LargeInt e;
 	LargeInt d;
 	int bits;
 
 public:
+	LargeInt p;
+	LargeInt q;
+	LargeInt e;
+
 	// 根据位数生成p q n phi
 	void generateKey(int bits);
 
